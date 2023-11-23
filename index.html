@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Capture</title>
+</head>
+<body>
+
+<div>
+    <button onclick="captureImage()">Capture Image</button>
+    <button onclick="switchCamera()">Switch Camera</button>
+    <button onclick="downloadImage()">Download Image</button>
+</div>
+
+<video id="video" width="400" height="300" autoplay></video>
+<canvas id="canvas" style="display: none;"></canvas>
+<img id="capturedImage" style="display: none;">
+
+<script>
+    let videoStream;
+    let video = document.getElementById('video');
+    let canvas = document.getElementById('canvas');
+    let ctx = canvas.getContext('2d');
+    let capturedImage = document.getElementById('capturedImage');
+
+    // Get user media (webcam)
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+            videoStream = stream;
+            video.srcObject = stream;
+        })
+        .catch(function (error) {
+            console.error('Error accessing webcam: ', error);
+        });
+
+    function captureImage() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Show captured image
+        capturedImage.src = canvas.toDataURL('image/png');
+        capturedImage.style.display = 'block';
+    }
+
+    async function switchCamera() {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+
+        if (videoDevices.length > 1) {
+            videoStream.getTracks().forEach(track => track.stop());
+
+            const nextCamera = videoDevices.findIndex(device => device.label !== videoStream.getVideoTracks()[0].label);
+            const newStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: videoDevices[nextCamera].deviceId } } });
+
+            videoStream = newStream;
+            video.srcObject = newStream;
+        } else {
+            console.warn('Only one camera available.');
+        }
+    }
+
+    function downloadImage() {
+        // Download the captured image
+        const link = document.createElement('a');
+        link.href = capturedImage.src;
+        link.download = 'captured_image.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
