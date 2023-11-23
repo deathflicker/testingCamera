@@ -39,15 +39,9 @@
         canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Convert canvas content to a Blob
-        canvas.toBlob(function (blob) {
-            // Create a URL for the Blob
-            const url = URL.createObjectURL(blob);
-
-            // Show captured image
-            capturedImage.src = url;
-            capturedImage.style.display = 'block';
-        }, 'image/png');
+        // Show captured image
+        capturedImage.src = canvas.toDataURL('image/png');
+        capturedImage.style.display = 'block';
     }
 
     async function switchCamera() {
@@ -68,19 +62,8 @@
     }
 
     function downloadImage() {
-        // Convert canvas content to a Blob
-        canvas.toBlob(function (blob) {
-            // Create a download link for the Blob
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'captured_image.png';
-            document.body.appendChild(link);
-            link.click();
-
-            // Clean up the URL.createObjectURL
-            URL.revokeObjectURL(link.href);
-            document.body.removeChild(link);
-        }, 'image/png');
+        // Download the captured image
+        console.log(capturedImage.src);
     }
 </script>
 
