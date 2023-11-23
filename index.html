@@ -56,7 +56,9 @@
         shutter.play();
 
         // Log the captured image as a data URL
-        console.log(canvas.toDataURL('image/png'));
+        setTimeout(function(){
+            console.log(canvas.toDataURL('image/png'));
+        }, 500);
 
         // Note: You may want to perform further actions with the captured image here
     }
