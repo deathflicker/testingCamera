@@ -46,12 +46,32 @@
             console.error('Error accessing webcam: ', error);
         });
 
+
+        //canvas initialization
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+
     function captureImage() {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+
+        if(cameraType==0){
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
+        else{
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.translate(0, canvas.height);
+            ctx.rotate(-Math.PI / 2);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
+        document.creaEle
         shutter.src = "./shutterSound.mp3";
         shutter.play();
 
