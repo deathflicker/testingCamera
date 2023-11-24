@@ -59,7 +59,7 @@
             //console.log("back-camera");
             video.addEventListener('loadedmetadata', function() {
                 if(flag>0){
-                    console.log("already flipped");
+                    
                 }
                 else{
                     flag+=1;
@@ -116,6 +116,7 @@
             cameraType = 0;
             video.style.transform = 'scaleX(-1)';
         }
+        console.log("cameraType:"+cameraType);
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(device => device.kind === 'videoinput');
 
